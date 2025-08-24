@@ -1,0 +1,130 @@
+좋습니다 👍 말씀하신 **GAN**과 **Diffusion Model**은 둘 다 최근 시험 범위와 파일럿에서도 직접 등장했던 “데이터 증강 / 생성형 모델” 주제라서 조금 더 깊게 설명드릴게요.
+
+---
+
+## 🔹 GAN (Generative Adversarial Network, 적대적 생성 신경망)
+
+### 1. 기본 개념
+
+* GAN은 \*\*두 개의 신경망(Generator vs Discriminator)\*\*이 서로 경쟁하면서 학습하는 구조.
+* **Generator(G)**: 가짜 데이터를 만들어내는 모델. (예: 가짜 이미지)
+* **Discriminator(D)**: 입력이 진짜 데이터인지 가짜인지 구별하는 모델.
+
+👉 목표: Generator는 점점 더 진짜 같은 데이터를 만들고, Discriminator는 이를 구별하는 능력을 키움.
+
+---
+
+### 2. 구조
+
+1. Generator 입력: 무작위 노이즈(z)
+2. Generator 출력: 가짜 데이터 (예: 이미지)
+3. Discriminator 입력: 진짜 데이터 + 가짜 데이터
+4. Discriminator 출력: 진짜(1) or 가짜(0)
+
+---
+
+### 3. 수식 (목적 함수)
+
+GAN의 학습은 **미니맥스 게임**으로 표현됩니다:
+
+$$
+\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{data}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log(1 - D(G(z)))]
+$$
+
+* Discriminator는 **진짜일 때 1, 가짜일 때 0**에 가깝게 만들고,
+* Generator는 Discriminator를 속여서 가짜도 1(진짜)라고 판단하게 만들려고 함.
+
+---
+
+### 4. 활용 사례
+
+* 가짜 얼굴 생성 (thispersondoesnotexist.com)
+* 이미지 해상도 복원 (Super Resolution)
+* 데이터 증강 (특히 소수 클래스 샘플 합성)
+
+---
+
+### 5. 장단점
+
+* 장점: 아주 사실적인 샘플 생성 가능.
+* 단점: 학습 불안정, Mode Collapse(다양성 부족) 문제 발생.
+
+---
+
+## 🔹 Diffusion Model (확산 모델)
+
+### 1. 기본 개념
+
+* 최근(2020년대) 이미지 생성 모델의 대세. (Stable Diffusion, DALL·E 2 등)
+* **아이디어**: 데이터를 점차 노이즈로 망가뜨리는 과정(Forward), 그리고 다시 복원하는 과정(Backward)을 학습.
+
+---
+
+### 2. 과정
+
+1. **Forward Process**
+
+   * 깨끗한 데이터(이미지)에 **점차적으로 가우시안 노이즈** 추가.
+   * 최종적으로 완전한 노이즈(랜덤 이미지)가 됨.
+
+2. **Backward Process (Denoising)**
+
+   * 학습된 신경망이 노이즈를 제거하면서 원래 데이터를 복원.
+   * 단계를 반복하며 점차 “진짜 같은” 이미지를 생성.
+
+---
+
+### 3. 수식 (간단 표현)
+
+* Forward:
+
+  $$
+  q(x_t \mid x_{t-1}) = \mathcal{N}(x_t; \sqrt{1-\beta_t}x_{t-1}, \beta_t I)
+  $$
+* Backward:
+
+  $$
+  p_\theta(x_{t-1} \mid x_t)
+  $$
+
+  학습된 네트워크가 **노이즈 분포**를 예측해 제거.
+
+---
+
+### 4. 특징
+
+* GAN보다 학습이 안정적.
+* 이미지 품질과 다양성이 뛰어남.
+* 생성 과정이 단계적이어서 느릴 수 있음 → 최근엔 속도 개선 연구 활발.
+
+---
+
+### 5. 활용 사례
+
+* 이미지 생성 (Stable Diffusion, MidJourney)
+* 음성 합성
+* 단백질 구조 예측 (AlphaFold2에도 유사 개념 응용)
+
+---
+
+## 🔑 시험 대비 핵심 차이 정리
+
+| 구분     | GAN                           | Diffusion Model                     |
+| ------ | ----------------------------- | ----------------------------------- |
+| 기본 원리  | Generator vs Discriminator 경쟁 | 노이즈 추가 → 제거 과정을 학습                  |
+| 학습 안정성 | 불안정, Mode collapse 발생         | 안정적, 다양한 샘플 생성                      |
+| 속도     | 빠름                            | 상대적으로 느림                            |
+| 활용     | 가짜 얼굴, 데이터 증강                 | Stable Diffusion, DALL·E, 최신 생성형 AI |
+| 파일럿 출제 | 직접 언급 없음                      | 문항 7 (Forward/Backward 과정)          |
+
+---
+
+📌 결론
+
+* **GAN**: 2014년 이후 크게 유행, 데이터 증강·이미지 합성에 사용.
+* **Diffusion**: 최근 SOTA(State-of-the-art) 모델, 이미지 생성 분야에서 대세.
+* 시험에서는 **Forward / Backward 과정** (Diffusion), **Generator vs Discriminator** (GAN) 원리 차이를 묻는 문제가 나올 수 있음.
+
+---
+
+👉 혹시 원하시면 제가 **GAN과 Diffusion 관련 예상 문제**(객관식 + 단답식)도 만들어드릴까요?
